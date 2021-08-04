@@ -21,16 +21,23 @@ class MainActivity : AppCompatActivity() {
             newGameLinearLayout.visibility = View.VISIBLE
             newGameButton.visibility = View.GONE
         }
+
+        val standardButton = findViewById<Button>(R.id.standardButton)
         val beginnerButton = findViewById<Button>(R.id.beginnerButton)
         val intermediateButton = findViewById<Button>(R.id.intermediateButton)
         val expertButton = findViewById<Button>(R.id.expertButton)
+        val masterButton = findViewById<Button>(R.id.masterButton)
         val customButton = findViewById<Button>(R.id.customButton)
 
-        beginnerButton.setOnClickListener { startGame(9, 9) }
+        standardButton.setOnClickListener { startGame(19, 10, 38) }
 
-        intermediateButton.setOnClickListener { startGame(16, 16) }
+        beginnerButton.setOnClickListener { startGame(9, 9, 10) }
 
-        expertButton.setOnClickListener { startGame(30, 30) }
+        intermediateButton.setOnClickListener { startGame(16, 16, 40) }
+
+        expertButton.setOnClickListener { startGame(24, 24, 99) }
+
+        masterButton.setOnClickListener { startGame(50, 50, 300) }
 
         customButton.setOnClickListener {
 
@@ -50,9 +57,10 @@ class MainActivity : AppCompatActivity() {
                     val height = heightEditText.text.toString()
                     val mines = minesEditText.text.toString()
                     when {
-                        width == "" -> showWarning("Width")
-                        height == "" -> showWarning("Height")
-                        mines == "" -> showWarning("Mines")
+                        width == "" || width == "0" -> showWarning("Please Enter a valid Width")
+                        height == "" || height == "0" -> showWarning("Please Enter a valid Height")
+                        mines == "" -> showWarning("Oops! You forgot to enter the Mine Count.")
+                        mines == "0" -> showWarning("There should be at least one Mine! -_-")
                         else -> startGame(
                             widthEditText.text.toString().toInt(),
                             heightEditText.text.toString().toInt(),
@@ -69,7 +77,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showWarning(str: String) {
-        Toast.makeText(this@MainActivity, "Enter Valid $str", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this@MainActivity, str, Toast.LENGTH_SHORT).show()
     }
 
     private fun startGame(width: Int, height: Int, mines: Int = -1) {

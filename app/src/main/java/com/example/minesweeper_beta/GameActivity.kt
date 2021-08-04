@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -33,9 +34,14 @@ class GameActivity : AppCompatActivity() {
 
         var flagCount = getMineCount(width, height, mines, false)
         val flagCountTextView = findViewById<TextView>(R.id.flagCountTextView)
-        flagCountTextView.text = flagCount.toString()
+        flagCountTextView.text = "⚑ $flagCount"
 
         val boardLinearLayout = findViewById<LinearLayout>(R.id.boardLinearLayout)
+
+        val mainMenuButton = findViewById<Button>(R.id.mainMenuButton)
+        mainMenuButton.setOnClickListener {
+            finish()
+        }
 
 
         val params = LinearLayout.LayoutParams(
@@ -143,9 +149,9 @@ class GameActivity : AppCompatActivity() {
 
         restartGameButton.setOnClickListener {
             minesweeper = Minesweeper(width, height)
-            minesArray = MutableList(getMineCount(width, height, mines, true)) { IntArray(2) }
+            minesArray = MutableList(getMineCount(width, height, mines, false)) { IntArray(2) }
             flagCount = getMineCount(width, height, mines, false)
-            flagCountTextView.text = flagCount.toString()
+            flagCountTextView.text = "⚑ $flagCount"
             firstMove = true
             updateBoard(width, height, true)
         }
@@ -196,7 +202,7 @@ class GameActivity : AppCompatActivity() {
                 cell.setOnLongClickListener {
                     if (flagCount > 0) {
                         handleCellClick(2)
-                        flagCountTextView.text = flagCount.toString()
+                        flagCountTextView.text = "⚑ $flagCount"
                     }
                     return@setOnLongClickListener true
                 }
