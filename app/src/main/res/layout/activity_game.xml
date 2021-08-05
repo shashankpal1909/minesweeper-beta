@@ -7,31 +7,31 @@
     tools:context=".GameActivity">
 
     <TextView
-        android:id="@+id/boardDim"
-        android:layout_width="0dp"
+        android:id="@+id/timerTextView"
+        android:layout_width="96dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:gravity="center"
+        android:text="00:00:00"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/flagCountTextView"
-        app:layout_constraintTop_toTopOf="@+id/flagCountTextView"
-        tools:text="3X3" />
+        app:layout_constraintTop_toTopOf="@+id/flagCountTextView" />
 
     <TextView
         android:id="@+id/flagCountTextView"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:gravity="center"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/boardDim"
+        app:layout_constraintEnd_toStartOf="@+id/timerTextView"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="⚑ 99" />

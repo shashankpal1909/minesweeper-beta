@@ -4,8 +4,8 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.Gravity
-import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -21,16 +21,40 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
+        var secondsElapsed = 0
+        var seconds = 0
+        var minutes = 0
+        var hours = 0
+        val timerTextView = findViewById<TextView>(R.id.timerTextView)
+
+        var timer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
+
+            override fun onTick(millisUntilFinished: Long) {
+
+                secondsElapsed += 1
+                hours = secondsElapsed / 3600
+                minutes = (secondsElapsed % 3600) / 60
+                seconds = secondsElapsed % 60
+
+                timerTextView.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+
+            }
+
+            override fun onFinish() {
+                Toast.makeText(applicationContext, "Game Over: Timer Expired", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+        }
+
         fun dpToPx(dp: Int): Int {
             val density: Float = this.resources.displayMetrics.density
             return (dp.toFloat() * density).roundToInt()
         }
 
-        val dim = findViewById<TextView>(R.id.boardDim)
         val width = intent.extras!!["WIDTH"].toString().toInt()
         val height = intent.extras!!["HEIGHT"].toString().toInt()
         val mines = intent.extras!!["MINES"].toString().toInt()
-        dim.text = "$width X $height"
 
         var flagCount = getMineCount(width, height, mines, false)
         val flagCountTextView = findViewById<TextView>(R.id.flagCountTextView)
@@ -114,6 +138,9 @@ class GameActivity : AppCompatActivity() {
                         } else {
                             if (newGameStarting) {
                                 cell.text = ""
+                                timer.cancel()
+                                secondsElapsed = 0
+                                timerTextView.text = String.format("%02d:%02d:%02d", 0, 0, 0)
                                 cell.setBackgroundResource(R.drawable.rounded_corner_view)
                                 cell.setTextColor(Color.BLACK)
                             }
@@ -123,8 +150,10 @@ class GameActivity : AppCompatActivity() {
                 }
             }
             if (minesweeper.status == Status.LOST) {
+                timer.cancel()
                 Toast.makeText(this, "You Lost", Toast.LENGTH_SHORT).show()
             } else if (minesweeper.status == Status.WON) {
+                timer.cancel()
                 Toast.makeText(this, "You Won", Toast.LENGTH_SHORT).show()
             }
         }
@@ -158,7 +187,7 @@ class GameActivity : AppCompatActivity() {
 
 
         val paramsCell = LinearLayout.LayoutParams(dpToPx(40), dpToPx(40))
-        paramsCell.setMargins(3, 3, 3, 3)
+        paramsCell.setMargins(dpToPx(2), dpToPx(2), dpToPx(2), dpToPx(2))
 
         var counter = 1
 
@@ -177,11 +206,12 @@ class GameActivity : AppCompatActivity() {
                 cell.setTextColor(Color.BLACK)
                 cell.setTypeface(cell.typeface, Typeface.BOLD)
                 cell.layoutParams = paramsCell
-                cell.textSize = 20F
+                cell.textSize = 24F
 
                 fun handleCellClick(choice: Int = 1) {
                     if (firstMove) {
                         firstMove = false
+                        timer.start()
                         setupMines(i, j)
                         println("Mines:${printMines(minesArray)}")
                     }

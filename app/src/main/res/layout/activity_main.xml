@@ -50,35 +50,35 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="STANDARD (10×19 - 38)" />
+            android:text="STANDARD (10×19 - 38✹)" />
 
         <Button
             android:id="@+id/beginnerButton"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Beginner (9×9 - 10)" />
+            android:text="Beginner (9×9 - 10✹)" />
 
         <Button
             android:id="@+id/intermediateButton"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Intermediate (16×16 - 40)" />
+            android:text="Intermediate (16×16 - 40✹)" />
 
         <Button
             android:id="@+id/expertButton"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Expert (24×24 - 99)" />
+            android:text="Expert (24×24 - 99✹)" />
 
         <Button
             android:id="@+id/masterButton"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="MASTER (50×50 - 300)" />
+            android:text="MASTER (50×50 - 300✹)" />
 
         <Button
             android:id="@+id/customButton"
