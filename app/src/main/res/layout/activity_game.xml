@@ -76,12 +76,12 @@
         android:layout_marginBottom="8dp"
         android:text="RESTART"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/mainMenuButton"
+        app:layout_constraintEnd_toStartOf="@+id/mainMenuGameButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/mainMenuButton"
+        android:id="@+id/mainMenuGameButton"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

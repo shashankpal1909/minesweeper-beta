@@ -28,16 +28,17 @@ class MainActivity : AppCompatActivity() {
         val expertButton = findViewById<Button>(R.id.expertButton)
         val masterButton = findViewById<Button>(R.id.masterButton)
         val customButton = findViewById<Button>(R.id.customButton)
+        val statsButton = findViewById<Button>(R.id.statsButton)
 
-        standardButton.setOnClickListener { startGame(19, 10, 38) }
+        standardButton.setOnClickListener { startGame(19, 10, 38, "Standard") }
 
-        beginnerButton.setOnClickListener { startGame(9, 9, 10) }
+        beginnerButton.setOnClickListener { startGame(9, 9, 10, "Beginner") }
 
-        intermediateButton.setOnClickListener { startGame(16, 16, 40) }
+        intermediateButton.setOnClickListener { startGame(16, 16, 40, "Intermediate") }
 
-        expertButton.setOnClickListener { startGame(24, 24, 99) }
+        expertButton.setOnClickListener { startGame(24, 24, 99, "Expert") }
 
-        masterButton.setOnClickListener { startGame(50, 50, 300) }
+        masterButton.setOnClickListener { startGame(50, 50, 300, "Master") }
 
         customButton.setOnClickListener {
 
@@ -64,7 +65,8 @@ class MainActivity : AppCompatActivity() {
                         else -> startGame(
                             widthEditText.text.toString().toInt(),
                             heightEditText.text.toString().toInt(),
-                            minesEditText.text.toString().toInt()
+                            minesEditText.text.toString().toInt(),
+                            "Custom"
                         )
                     }
                 }
@@ -74,17 +76,22 @@ class MainActivity : AppCompatActivity() {
             alertDialog.show()
         }
 
+        statsButton.setOnClickListener {
+            startActivity(Intent(this, StatsActivity::class.java))
+        }
+
     }
 
     private fun showWarning(str: String) {
         Toast.makeText(this@MainActivity, str, Toast.LENGTH_SHORT).show()
     }
 
-    private fun startGame(width: Int, height: Int, mines: Int = -1) {
+    private fun startGame(width: Int, height: Int, mines: Int = -1, name: String) {
         startActivity(Intent(this, GameActivity::class.java).apply {
             putExtra("WIDTH", width)
             putExtra("HEIGHT", height)
             putExtra("MINES", mines)
+            putExtra("NAME", name)
         })
     }
 

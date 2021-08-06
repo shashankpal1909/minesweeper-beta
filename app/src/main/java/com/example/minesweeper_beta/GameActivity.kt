@@ -1,5 +1,6 @@
 package com.example.minesweeper_beta
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -14,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-
 class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -24,10 +24,10 @@ class GameActivity : AppCompatActivity() {
         var secondsElapsed = 0
         var seconds = 0
         var minutes = 0
-        var hours = 0
+        var hours: Int
         val timerTextView = findViewById<TextView>(R.id.timerTextView)
 
-        var timer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
+        val timer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
 
@@ -55,14 +55,15 @@ class GameActivity : AppCompatActivity() {
         val width = intent.extras!!["WIDTH"].toString().toInt()
         val height = intent.extras!!["HEIGHT"].toString().toInt()
         val mines = intent.extras!!["MINES"].toString().toInt()
+        val boardName = intent.extras!!["NAME"].toString()
 
         var flagCount = getMineCount(width, height, mines, false)
         val flagCountTextView = findViewById<TextView>(R.id.flagCountTextView)
-        flagCountTextView.text = "⚑ $flagCount"
+        flagCountTextView.text = "✹ $flagCount"
 
         val boardLinearLayout = findViewById<LinearLayout>(R.id.boardLinearLayout)
 
-        val mainMenuButton = findViewById<Button>(R.id.mainMenuButton)
+        val mainMenuButton = findViewById<Button>(R.id.mainMenuGameButton)
         mainMenuButton.setOnClickListener {
             finish()
         }
@@ -149,12 +150,74 @@ class GameActivity : AppCompatActivity() {
                     counter++
                 }
             }
-            if (minesweeper.status == Status.LOST) {
+            if (minesweeper.status == Status.WON || minesweeper.status == Status.LOST) {
+
                 timer.cancel()
-                Toast.makeText(this, "You Lost", Toast.LENGTH_SHORT).show()
-            } else if (minesweeper.status == Status.WON) {
-                timer.cancel()
-                Toast.makeText(this, "You Won", Toast.LENGTH_SHORT).show()
+                val sharedPrefLastGame =
+                    getSharedPreferences("LAST_GAME_STATS", Context.MODE_PRIVATE)
+                with(sharedPrefLastGame.edit()) {
+                    putString(
+                        "STATS",
+                        "Last Game : ${minutes}m${seconds}s | $boardName | ${height}×${width} | ${
+                            getMineCount(
+                                width,
+                                height,
+                                mines,
+                                false
+                            )
+                        }✹ | ${minesweeper.status}"
+                    )
+                    commit()
+                }
+
+                val sharedPrefGameStats =
+                    getSharedPreferences(boardName.uppercase(), Context.MODE_PRIVATE)
+                with(sharedPrefGameStats) {
+                    edit().putInt(
+                        "TOTAL_GAMES_COUNT",
+                        getInt("TOTAL_GAMES_COUNT", 0) + 1
+                    ).apply()
+                    edit().putInt(
+                        "TOTAL_TIME",
+                        getInt("TOTAL_TIME", 0) + secondsElapsed
+                    ).apply()
+                }
+
+                if (minesweeper.status == Status.LOST) {
+                    with(sharedPrefGameStats) {
+                        edit().putInt(
+                            "TOTAL_GAMES_LOST",
+                            getInt("TOTAL_GAMES_LOST", 0) + 1
+                        ).apply()
+                    }
+                    Toast.makeText(this, "YOU LOST! Better Luck Next Time.", Toast.LENGTH_SHORT)
+                        .show()
+                } else if (minesweeper.status == Status.WON) {
+                    with(sharedPrefGameStats) {
+                        edit().putInt(
+                            "TOTAL_GAMES_WON",
+                            getInt("TOTAL_GAMES_WON", 0) + 1
+                        ).apply()
+                        if (sharedPrefGameStats.getInt(
+                                "SHORTEST_TIME",
+                                Int.MAX_VALUE
+                            ) > secondsElapsed
+                        ) {
+                            edit().putInt("SHORTEST_TIME", secondsElapsed).apply()
+                        }
+                    }
+                    Toast.makeText(
+                        this, "YOU WON! Found ${
+                            getMineCount(
+                                width,
+                                height,
+                                mines,
+                                false
+                            )
+                        } Mines in ${getTimeString(secondsElapsed)} Seconds.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
 
@@ -180,7 +243,7 @@ class GameActivity : AppCompatActivity() {
             minesweeper = Minesweeper(width, height)
             minesArray = MutableList(getMineCount(width, height, mines, false)) { IntArray(2) }
             flagCount = getMineCount(width, height, mines, false)
-            flagCountTextView.text = "⚑ $flagCount"
+            flagCountTextView.text = "✹ $flagCount"
             firstMove = true
             updateBoard(width, height, true)
         }
@@ -232,7 +295,7 @@ class GameActivity : AppCompatActivity() {
                 cell.setOnLongClickListener {
                     if (flagCount > 0) {
                         handleCellClick(2)
-                        flagCountTextView.text = "⚑ $flagCount"
+                        flagCountTextView.text = "✹ $flagCount"
                     }
                     return@setOnLongClickListener true
                 }
@@ -260,12 +323,27 @@ class GameActivity : AppCompatActivity() {
                 if (mineCountWarning) {
                     Toast.makeText(
                         this@GameActivity,
-                        "Mine Count cannot be more that 1/4th of Board Area. New Mine Count : ${width * height / 4}",
+                        "Mine Count cannot be more than 1/4th of Board Area. New Mine Count : ${width * height / 4}",
                         Toast.LENGTH_LONG
                     ).show()
                 }
                 width * height / 4
             } else mines
+        }
+    }
+
+    private fun getTimeString(secondsElapsed: Int): String {
+        val hours = secondsElapsed / 3600
+        val minutes = (secondsElapsed % 3600) / 60
+        val seconds = secondsElapsed % 60
+        return if (hours == 0) {
+            if (minutes == 0) {
+                "${seconds}s"
+            } else {
+                "${minutes}m${seconds}s"
+            }
+        } else {
+            "${hours}h${minutes}m${seconds}s"
         }
     }
 
