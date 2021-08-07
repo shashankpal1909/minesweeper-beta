@@ -1,5 +1,6 @@
 package com.example.minesweeper_beta
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +80,36 @@ class MainActivity : AppCompatActivity() {
 
         statsButton.setOnClickListener {
             startActivity(Intent(this, StatsActivity::class.java))
+        }
+
+
+        val button = findViewById<Button>(R.id.button)
+        when (AppCompatDelegate.getDefaultNightMode()) {
+            AppCompatDelegate.MODE_NIGHT_NO, AppCompatDelegate.MODE_NIGHT_UNSPECIFIED -> {
+                button.text = "USE DARK THEME"
+            }
+            else -> {
+                button.text = "USE LIGHT THEME"
+            }
+        }
+
+        val sharedPref = getPreferences(Context.MODE_PRIVATE)
+        when (sharedPref.getInt("THEME", -1)) {
+            -1, 0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+
+        button.setOnClickListener {
+            when (AppCompatDelegate.getDefaultNightMode()) {
+                AppCompatDelegate.MODE_NIGHT_NO, AppCompatDelegate.MODE_NIGHT_UNSPECIFIED -> {
+                    sharedPref.edit().putInt("THEME", 1).apply()
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }
+                else -> {
+                    sharedPref.edit().putInt("THEME", 0).apply()
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
         }
 
     }

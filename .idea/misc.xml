@@ -3,7 +3,23 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable-night/board_background.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable-night/flag_background.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable-night/plain_corner_background.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable-night/revealed_cell_background.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable-night/rounded_corner_border.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable-night/rounded_corner_cell.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable-night/rounded_corners_background.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable/board_background.xml" value="0.26614583333333336" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable/customborder.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable/flag_background.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable/mine_background_green.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable/mine_background_red.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable/plain_corner_background.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable/revealed_cell_background.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable/rounded_corner_background.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable/rounded_corner_border.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable/rounded_corner_cell.xml" value="0.26614583333333336" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/drawable/rounded_corner_view.xml" value="0.26614583333333336" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/layout/activity_game.xml" value="0.264" />
         <entry key="..\:/Users/shash/AndroidStudioProjects/Minesweeper_Beta/app/src/main/res/layout/activity_main.xml" value="0.264" />

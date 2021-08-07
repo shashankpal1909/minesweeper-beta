@@ -36,7 +36,12 @@ class GameActivity : AppCompatActivity() {
                 minutes = (secondsElapsed % 3600) / 60
                 seconds = secondsElapsed % 60
 
-                timerTextView.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+                timerTextView.text = when (hours) {
+                    0 -> {
+                        String.format("%02d:%02d", minutes, seconds)
+                    }
+                    else -> String.format("%02d:%02d:%02", hours, minutes, seconds)
+                }
 
             }
 
@@ -106,44 +111,52 @@ class GameActivity : AppCompatActivity() {
                     if (!mineCell.isFinal) {
                         if (mineCell.isRevealed) {
                             mineCell.isFinal = true
-                            cell.background = shape
+                            cell.background = getDrawable(R.drawable.revealed_cell_background)
                             if (mineCell.value != 0) {
                                 cell.text = mineCell.value.toString()
                             }
-                            cell.setTextColor(
-                                getTextColor(mineCell)
-                            )
+//                            cell.setTextColor(
+////                                Color.WHITE
+//                                getTextColor(mineCell)
+//                            )
+
                         } else if (mineCell.isMarked) {
                             val mineCellShape = GradientDrawable()
                             mineCellShape.cornerRadius = dpToPx(2).toFloat()
                             mineCellShape.setColor(Color.rgb(54, 69, 79))
-                            cell.background = mineCellShape
-                            cell.setTextColor(Color.WHITE)
+                            cell.background = getDrawable(R.drawable.flag_background)
+//                            cell.setTextColor(Color.WHITE)
                             cell.text = "⚑"
                         } else if (minesweeper.status == Status.LOST && mineCell.value == -1) {
                             val mineCellShape = GradientDrawable()
                             mineCellShape.cornerRadius = dpToPx(2).toFloat()
                             mineCellShape.setColor(Color.rgb(219, 88, 96))
-                            cell.background = mineCellShape
+                            cell.background = getDrawable(R.drawable.mine_background_red)
                             mineCell.isFinal = true
                             cell.text = "✹"
-                            cell.setTextColor(Color.WHITE)
+//                            cell.setTextColor(Color.WHITE)
                         } else if (minesweeper.status == Status.WON && mineCell.value == -1) {
                             val mineCellShape = GradientDrawable()
                             mineCellShape.cornerRadius = dpToPx(2).toFloat()
                             mineCellShape.setColor(Color.rgb(86, 168, 105))
                             mineCell.isFinal = true
-                            cell.background = mineCellShape
+                            cell.background = getDrawable(R.drawable.mine_background_green)
                             cell.text = "✹"
-                            cell.setTextColor(Color.WHITE)
+//                            cell.setTextColor(Color.WHITE)
                         } else {
                             if (newGameStarting) {
                                 cell.text = ""
                                 timer.cancel()
                                 secondsElapsed = 0
-                                timerTextView.text = String.format("%02d:%02d:%02d", 0, 0, 0)
-                                cell.setBackgroundResource(R.drawable.rounded_corner_view)
-                                cell.setTextColor(Color.BLACK)
+                                timerTextView.text = String.format("%02d:%02d", 0, 0)
+                                cell.setBackgroundResource(R.drawable.rounded_corner_cell)
+                                cell.setTextAppearance(
+                                    this,
+                                    android.R.style.TextAppearance_Material_Body1
+                                )
+                                cell.setTypeface(cell.typeface, Typeface.BOLD)
+                                cell.textSize = 20F
+//                                cell.setTextColor(Color.BLACK)
                             }
                         }
                     }
@@ -158,7 +171,7 @@ class GameActivity : AppCompatActivity() {
                 with(sharedPrefLastGame.edit()) {
                     putString(
                         "STATS",
-                        "Last Game : ${minutes}m${seconds}s | $boardName | ${height}×${width} | ${
+                        "LAST GAME : ${minutes}m${seconds}s | ${boardName.uppercase()} | ${height}×${width} | ${
                             getMineCount(
                                 width,
                                 height,
@@ -249,8 +262,8 @@ class GameActivity : AppCompatActivity() {
         }
 
 
-        val paramsCell = LinearLayout.LayoutParams(dpToPx(40), dpToPx(40))
-        paramsCell.setMargins(dpToPx(2), dpToPx(2), dpToPx(2), dpToPx(2))
+        val paramsCell = LinearLayout.LayoutParams(dpToPx(38), dpToPx(38))
+        paramsCell.setMargins(dpToPx(1), dpToPx(1), dpToPx(1), dpToPx(1))
 
         var counter = 1
 
@@ -265,11 +278,13 @@ class GameActivity : AppCompatActivity() {
                 cell.id = counter++
                 cell.text = "" /*minesweeper.board[i][j].value.toString()*/
                 cell.gravity = Gravity.CENTER
-                cell.setBackgroundResource(R.drawable.rounded_corner_view)
-                cell.setTextColor(Color.BLACK)
+                cell.setBackgroundResource(R.drawable.rounded_corner_cell)
+                cell.setTextAppearance(this, android.R.style.TextAppearance_Material_Body1)
+//                cell.setTextColor(Color.BLACK)
                 cell.setTypeface(cell.typeface, Typeface.BOLD)
+                cell.textSize = 20F
                 cell.layoutParams = paramsCell
-                cell.textSize = 24F
+
 
                 fun handleCellClick(choice: Int = 1) {
                     if (firstMove) {

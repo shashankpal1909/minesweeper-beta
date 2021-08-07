@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 
 class StatsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,21 +27,32 @@ class StatsActivity : AppCompatActivity() {
 
         val resetButton = findViewById<Button>(R.id.resetButton)
         resetButton.setOnClickListener {
-            listOf(
-                "STANDARD",
-                "BEGINNER",
-                "INTERMEDIATE",
-                "EXPERT",
-                "MASTER",
-                "CUSTOM",
-                "LAST_GAME_STATS"
-            ).forEach {
-                getSharedPreferences(it, Context.MODE_PRIVATE).edit().clear().apply()
-            }
-            setLastGameStats(lastGameStatsTextView, sharedPrefLastGame)
-            setGameStats()
-        }
 
+            val builder = AlertDialog.Builder(this)
+            with(builder) {
+                setTitle("Confirm Reset")
+                setMessage("Reset All Game Statistics?")
+                setPositiveButton("RESET") { _, _ ->
+                    listOf(
+                        "STANDARD",
+                        "BEGINNER",
+                        "INTERMEDIATE",
+                        "EXPERT",
+                        "MASTER",
+                        "CUSTOM",
+                        "LAST_GAME_STATS"
+                    ).forEach {
+                        getSharedPreferences(it, Context.MODE_PRIVATE).edit().clear().apply()
+                    }
+                    setLastGameStats(lastGameStatsTextView, sharedPrefLastGame)
+                    setGameStats()
+                }
+                setNegativeButton("CANCEL") { _, _ -> }
+            }
+            val alertDialog = builder.create()
+            alertDialog.show()
+
+        }
 
     }
 
@@ -48,7 +60,7 @@ class StatsActivity : AppCompatActivity() {
         lastGameStatsTextView: TextView,
         sharedPrefLastGame: SharedPreferences
     ) {
-        lastGameStatsTextView.text = sharedPrefLastGame.getString("STATS", "No Games Played!")
+        lastGameStatsTextView.text = sharedPrefLastGame.getString("STATS", "NO GAMES PLAYED YET!")
     }
 
     private fun setGameStats() {
