@@ -136,8 +136,8 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         val sharedPrefSaveGame = getSharedPreferences("SAVE_GAME", Context.MODE_PRIVATE)
         val continueButton = findViewById<Button>(R.id.continueButton)
-        if (sharedPrefSaveGame.getInt("GAME_TIME", -1) == -1) {
-            continueButton.visibility = View.GONE
+        if (sharedPrefSaveGame.getInt("GAME_TIME", -1) != -1) {
+            continueButton.visibility = View.VISIBLE
         }
         val newGameButton = findViewById<Button>(R.id.newGameButton)
         val newGameLinearLayout = findViewById<LinearLayout>(R.id.newGameLinearLayout)
