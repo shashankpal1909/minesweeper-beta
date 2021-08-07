@@ -2,6 +2,7 @@ package com.example.minesweeper_beta
 
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -16,6 +17,23 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val continueButton = findViewById<Button>(R.id.continueButton)
+        val sharedPrefSaveGame = getSharedPreferences("SAVE_GAME", Context.MODE_PRIVATE)
+
+        if (sharedPrefSaveGame.getInt("GAME_TIME", -1) == -1) {
+            continueButton.visibility = View.GONE
+        }
+
+        continueButton.setOnClickListener {
+            startGame(
+                sharedPrefSaveGame.getInt("WIDTH", 0),
+                sharedPrefSaveGame.getInt("HEIGHT", 0),
+                sharedPrefSaveGame.getInt("MINES", 0),
+                sharedPrefSaveGame.getString("NAME", "").toString(),
+                sharedPrefSaveGame.getInt("GAME_TIME", 0)
+            )
+        }
 
         val newGameButton = findViewById<Button>(R.id.newGameButton)
         val newGameLinearLayout = findViewById<LinearLayout>(R.id.newGameLinearLayout)
@@ -114,16 +132,36 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        val sharedPrefSaveGame = getSharedPreferences("SAVE_GAME", Context.MODE_PRIVATE)
+        val continueButton = findViewById<Button>(R.id.continueButton)
+        if (sharedPrefSaveGame.getInt("GAME_TIME", -1) == -1) {
+            continueButton.visibility = View.GONE
+        }
+        val newGameButton = findViewById<Button>(R.id.newGameButton)
+        val newGameLinearLayout = findViewById<LinearLayout>(R.id.newGameLinearLayout)
+        newGameLinearLayout.visibility = View.GONE
+        newGameButton.visibility = View.VISIBLE
+    }
+
     private fun showWarning(str: String) {
         Toast.makeText(this@MainActivity, str, Toast.LENGTH_SHORT).show()
     }
 
-    private fun startGame(width: Int, height: Int, mines: Int = -1, name: String) {
+    private fun startGame(
+        width: Int,
+        height: Int,
+        mines: Int = -1,
+        name: String,
+        secondsElapsed: Int = -1
+    ) {
         startActivity(Intent(this, GameActivity::class.java).apply {
             putExtra("WIDTH", width)
             putExtra("HEIGHT", height)
             putExtra("MINES", mines)
             putExtra("NAME", name)
+            putExtra("GAME_TIME", secondsElapsed)
         })
     }
 

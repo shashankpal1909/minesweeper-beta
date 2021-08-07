@@ -28,9 +28,9 @@ package com.example.minesweeper_beta
 
 //board class
 class Minesweeper(private val width: Int, private val height: Int) {
-    val board = Array(width) { Array(height) { MineCell() } }
+    var board = Array(width) { Array(height) { MineCell() } }
     var status = Status.ONGOING
-        private set
+        internal set
 
     //sets up mines
     fun setMine(row: Int, column: Int): Boolean {

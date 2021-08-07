@@ -7,13 +7,25 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.Gravity
+import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import kotlin.math.roundToInt
 import kotlin.random.Random
+
+private var secondsElapsed = 0
+var timer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
+    override fun onTick(p0: Long) {
+    }
+
+    override fun onFinish() {
+    }
+
+}
 
 class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,35 +33,34 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        var secondsElapsed = 0
+        val width = intent.extras!!["WIDTH"].toString().toInt()
+        val height = intent.extras!!["HEIGHT"].toString().toInt()
+        val mines = intent.extras!!["MINES"].toString().toInt()
+        val boardName = intent.extras!!["NAME"].toString()
+
+        var firstMove = true
+
         var seconds = 0
         var minutes = 0
-        var hours: Int
+        var hours = 0
+
+        var minesweeper = Minesweeper(width, height)
+        var minesArray = MutableList(getMineCount(width, height, mines, true)) { IntArray(2) }
+
         val timerTextView = findViewById<TextView>(R.id.timerTextView)
 
-        val timer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
+
+        timer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
-
                 secondsElapsed += 1
-                hours = secondsElapsed / 3600
-                minutes = (secondsElapsed % 3600) / 60
-                seconds = secondsElapsed % 60
-
-                timerTextView.text = when (hours) {
-                    0 -> {
-                        String.format("%02d:%02d", minutes, seconds)
-                    }
-                    else -> String.format("%02d:%02d:%02", hours, minutes, seconds)
-                }
-
+                updateGameTime(secondsElapsed, timerTextView)
             }
 
             override fun onFinish() {
                 Toast.makeText(applicationContext, "Game Over: Timer Expired", Toast.LENGTH_SHORT)
                     .show()
             }
-
         }
 
         fun dpToPx(dp: Int): Int {
@@ -57,14 +68,8 @@ class GameActivity : AppCompatActivity() {
             return (dp.toFloat() * density).roundToInt()
         }
 
-        val width = intent.extras!!["WIDTH"].toString().toInt()
-        val height = intent.extras!!["HEIGHT"].toString().toInt()
-        val mines = intent.extras!!["MINES"].toString().toInt()
-        val boardName = intent.extras!!["NAME"].toString()
-
         var flagCount = getMineCount(width, height, mines, false)
         val flagCountTextView = findViewById<TextView>(R.id.flagCountTextView)
-        flagCountTextView.text = "✹ $flagCount"
 
         val boardLinearLayout = findViewById<LinearLayout>(R.id.boardLinearLayout)
 
@@ -73,7 +78,6 @@ class GameActivity : AppCompatActivity() {
             finish()
         }
 
-
         val params = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -81,11 +85,6 @@ class GameActivity : AppCompatActivity() {
 
         val shape = GradientDrawable()
         shape.cornerRadius = dpToPx(2).toFloat()
-
-        var firstMove = true
-
-        var minesweeper = Minesweeper(width, height)
-        var minesArray = MutableList(getMineCount(width, height, mines, true)) { IntArray(2) }
 
         fun getTextColor(mineCell: MineCell) = when (mineCell.value) {
             1 -> Color.rgb(0, 0, 255)
@@ -99,7 +98,12 @@ class GameActivity : AppCompatActivity() {
             else -> Color.BLACK
         }
 
-        fun updateBoard(width: Int, height: Int, newGameStarting: Boolean = false) {
+        fun updateBoard(
+            width: Int,
+            height: Int,
+            newGameStarting: Boolean = false,
+            gameContinue: Boolean = false
+        ) {
             var counter = 1
 
             shape.setColor(Color.rgb(185, 185, 185))
@@ -108,7 +112,7 @@ class GameActivity : AppCompatActivity() {
                 for (j in 0 until height) {
                     val mineCell = minesweeper.board[i][j]
                     val cell = findViewById<TextView>(counter)
-                    if (!mineCell.isFinal) {
+                    if (!mineCell.isFinal || gameContinue) {
                         if (mineCell.isRevealed) {
                             mineCell.isFinal = true
                             cell.background = getDrawable(R.drawable.revealed_cell_background)
@@ -163,7 +167,8 @@ class GameActivity : AppCompatActivity() {
                     counter++
                 }
             }
-            if (minesweeper.status == Status.WON || minesweeper.status == Status.LOST) {
+
+            if ((minesweeper.status == Status.WON || minesweeper.status == Status.LOST) && !gameContinue) {
 
                 timer.cancel()
                 val sharedPrefLastGame =
@@ -171,7 +176,7 @@ class GameActivity : AppCompatActivity() {
                 with(sharedPrefLastGame.edit()) {
                     putString(
                         "STATS",
-                        "LAST GAME : ${minutes}m${seconds}s | ${boardName.uppercase()} | ${height}×${width} | ${
+                        "LAST GAME : ${getTimeString(secondsElapsed)} | ${boardName.uppercase()} | ${height}×${width} | ${
                             getMineCount(
                                 width,
                                 height,
@@ -232,6 +237,22 @@ class GameActivity : AppCompatActivity() {
                     ).show()
                 }
             }
+
+            val sharedPrefSaveGame = getSharedPreferences("SAVE_GAME", Context.MODE_PRIVATE)
+            with(sharedPrefSaveGame.edit()) {
+                putInt("GAME_TIME", secondsElapsed)
+                putStringSet("BOARD", minesweeper.board.map { Gson().toJson(it) }.toSet())
+                putString("BOARD", Gson().toJson(minesweeper.board))
+                putString("NAME", boardName)
+                putInt("WIDTH", width)
+                putInt("HEIGHT", height)
+                putInt("MINES", getMineCount(width, height, mines, false))
+                putInt("FLAG_COUNT", flagCount)
+                putString("STATUS", minesweeper.status.toString())
+                putBoolean("FIRST_MOVE", firstMove)
+                commit()
+            }
+
         }
 
         fun setupMines(x: Int, y: Int) {
@@ -320,6 +341,50 @@ class GameActivity : AppCompatActivity() {
             boardLinearLayout.addView(linearLayout)
         }
 
+        if (intent.extras!!["GAME_TIME"].toString().toInt() != -1) {
+
+            secondsElapsed = intent.extras!!["GAME_TIME"].toString().toInt()
+            updateGameTime(secondsElapsed, timerTextView)
+            val sharedPrefSaveGame = getSharedPreferences("SAVE_GAME", Context.MODE_PRIVATE)
+            minesweeper.board = Gson().fromJson(
+                sharedPrefSaveGame.getString("BOARD", null),
+                Array<Array<MineCell>>::class.java
+            )
+            flagCount = sharedPrefSaveGame.getInt("FLAG_COUNT", 0)
+            firstMove = sharedPrefSaveGame.getBoolean("FIRST_MOVE", false)
+            minesweeper.status = when (sharedPrefSaveGame.getString("STATUS", "")) {
+                "WON" -> Status.WON
+                "LOST" -> Status.LOST
+                else -> {
+                    if (!firstMove) timer.start()
+                    Status.ONGOING
+                }
+            }
+            updateBoard(width, height, gameContinue = true)
+        }
+
+        flagCountTextView.text = "✹ $flagCount"
+
+    }
+
+    private fun updateGameTime(secondsElapsed: Int, timerTextView: TextView) {
+        val hours = secondsElapsed / 3600
+        val minutes = (secondsElapsed % 3600) / 60
+        val seconds = secondsElapsed % 60
+        timerTextView.text = when (hours) {
+            0 -> {
+                String.format("%02d:%02d", minutes, seconds)
+            }
+            else -> String.format("%02d:%02d:%02", hours, minutes, seconds)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        timer.cancel()
+        getSharedPreferences("SAVE_GAME", Context.MODE_PRIVATE).edit()
+            .putInt("GAME_TIME", secondsElapsed).apply()
+        secondsElapsed = 0
     }
 
     private fun printMines(minesArray: MutableList<IntArray>): String {
