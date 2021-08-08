@@ -7,24 +7,25 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.Gravity
-import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.widget.TextViewCompat
 import com.google.gson.Gson
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
 private var secondsElapsed = 0
+
 var timer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
     override fun onTick(p0: Long) {
     }
 
     override fun onFinish() {
     }
-
 }
 
 class GameActivity : AppCompatActivity() {
@@ -39,10 +40,6 @@ class GameActivity : AppCompatActivity() {
         val boardName = intent.extras!!["NAME"].toString()
 
         var firstMove = true
-
-        var seconds = 0
-        var minutes = 0
-        var hours = 0
 
         var minesweeper = Minesweeper(width, height)
         var minesArray = MutableList(getMineCount(width, height, mines, true)) { IntArray(2) }
@@ -86,18 +83,6 @@ class GameActivity : AppCompatActivity() {
         val shape = GradientDrawable()
         shape.cornerRadius = dpToPx(2).toFloat()
 
-        fun getTextColor(mineCell: MineCell) = when (mineCell.value) {
-            1 -> Color.rgb(0, 0, 255)
-            2 -> Color.rgb(0, 130, 0)
-            3 -> Color.rgb(255, 0, 0)
-            4 -> Color.rgb(0, 0, 132)
-            5 -> Color.rgb(132, 0, 0)
-            6 -> Color.rgb(0, 130, 132)
-            7 -> Color.rgb(132, 0, 132)
-            8 -> Color.rgb(117, 117, 117)
-            else -> Color.BLACK
-        }
-
         fun updateBoard(
             width: Int,
             height: Int,
@@ -115,38 +100,39 @@ class GameActivity : AppCompatActivity() {
                     if (!mineCell.isFinal || gameContinue) {
                         if (mineCell.isRevealed) {
                             mineCell.isFinal = true
-                            cell.background = getDrawable(R.drawable.revealed_cell_background)
+                            cell.background = AppCompatResources.getDrawable(
+                                this,
+                                R.drawable.revealed_cell_background
+                            )
                             if (mineCell.value != 0) {
                                 cell.text = mineCell.value.toString()
                             }
-//                            cell.setTextColor(
-////                                Color.WHITE
-//                                getTextColor(mineCell)
-//                            )
 
                         } else if (mineCell.isMarked) {
                             val mineCellShape = GradientDrawable()
                             mineCellShape.cornerRadius = dpToPx(2).toFloat()
                             mineCellShape.setColor(Color.rgb(54, 69, 79))
-                            cell.background = getDrawable(R.drawable.flag_background)
-//                            cell.setTextColor(Color.WHITE)
+                            cell.background =
+                                AppCompatResources.getDrawable(this, R.drawable.flag_background)
                             cell.text = "⚑"
                         } else if (minesweeper.status == Status.LOST && mineCell.value == -1) {
                             val mineCellShape = GradientDrawable()
                             mineCellShape.cornerRadius = dpToPx(2).toFloat()
                             mineCellShape.setColor(Color.rgb(219, 88, 96))
-                            cell.background = getDrawable(R.drawable.mine_background_red)
+                            cell.background =
+                                AppCompatResources.getDrawable(this, R.drawable.mine_background_red)
                             mineCell.isFinal = true
                             cell.text = "✹"
-//                            cell.setTextColor(Color.WHITE)
                         } else if (minesweeper.status == Status.WON && mineCell.value == -1) {
                             val mineCellShape = GradientDrawable()
                             mineCellShape.cornerRadius = dpToPx(2).toFloat()
                             mineCellShape.setColor(Color.rgb(86, 168, 105))
                             mineCell.isFinal = true
-                            cell.background = getDrawable(R.drawable.mine_background_green)
+                            cell.background = AppCompatResources.getDrawable(
+                                this,
+                                R.drawable.mine_background_green
+                            )
                             cell.text = "✹"
-//                            cell.setTextColor(Color.WHITE)
                         } else {
                             if (newGameStarting) {
                                 cell.text = ""
@@ -154,13 +140,12 @@ class GameActivity : AppCompatActivity() {
                                 secondsElapsed = 0
                                 timerTextView.text = String.format("%02d:%02d", 0, 0)
                                 cell.setBackgroundResource(R.drawable.rounded_corner_cell)
-                                cell.setTextAppearance(
-                                    this,
+                                TextViewCompat.setTextAppearance(
+                                    cell,
                                     android.R.style.TextAppearance_Material_Body1
                                 )
                                 cell.setTypeface(cell.typeface, Typeface.BOLD)
                                 cell.textSize = 20F
-//                                cell.setTextColor(Color.BLACK)
                             }
                         }
                     }
@@ -277,7 +262,7 @@ class GameActivity : AppCompatActivity() {
             minesweeper = Minesweeper(width, height)
             minesArray = MutableList(getMineCount(width, height, mines, false)) { IntArray(2) }
             flagCount = getMineCount(width, height, mines, false)
-            flagCountTextView.text = "✹ $flagCount"
+            flagCountTextView.text = getString(R.string.flag_count_text, flagCount)
             firstMove = true
             updateBoard(width, height, true)
         }
@@ -297,11 +282,13 @@ class GameActivity : AppCompatActivity() {
 
                 val cell = TextView(this)
                 cell.id = counter++
-                cell.text = "" /*minesweeper.board[i][j].value.toString()*/
+                cell.text = ""
                 cell.gravity = Gravity.CENTER
                 cell.setBackgroundResource(R.drawable.rounded_corner_cell)
-                cell.setTextAppearance(this, android.R.style.TextAppearance_Material_Body1)
-//                cell.setTextColor(Color.BLACK)
+                TextViewCompat.setTextAppearance(
+                    cell,
+                    android.R.style.TextAppearance_Material_Body1
+                )
                 cell.setTypeface(cell.typeface, Typeface.BOLD)
                 cell.textSize = 20F
                 cell.layoutParams = paramsCell
@@ -331,7 +318,7 @@ class GameActivity : AppCompatActivity() {
                 cell.setOnLongClickListener {
                     if (flagCount > 0) {
                         handleCellClick(2)
-                        flagCountTextView.text = "✹ $flagCount"
+                        flagCountTextView.text = getString(R.string.flag_count_text, flagCount)
                     }
                     return@setOnLongClickListener true
                 }
@@ -363,7 +350,7 @@ class GameActivity : AppCompatActivity() {
             updateBoard(width, height, gameContinue = true)
         }
 
-        flagCountTextView.text = "✹ $flagCount"
+        flagCountTextView.text = getString(R.string.flag_count_text, flagCount)
 
     }
 

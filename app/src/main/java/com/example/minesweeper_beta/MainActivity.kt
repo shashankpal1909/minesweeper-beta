@@ -2,7 +2,6 @@ package com.example.minesweeper_beta
 
 import android.content.Context
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -63,8 +62,7 @@ class MainActivity : AppCompatActivity() {
         customButton.setOnClickListener {
 
             val builder = AlertDialog.Builder(this)
-            val inflater = this.layoutInflater
-            val dialogView = inflater.inflate(R.layout.custom_dialog, null)
+            val dialogView = View.inflate(this, R.layout.custom_dialog, null)
 
             val widthEditText = dialogView.findViewById<EditText>(R.id.widthEditText)
             val heightEditText = dialogView.findViewById<EditText>(R.id.heightEditText)
@@ -90,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
                 }
-                setNegativeButton("CANCEL") { _, _ -> /*startActivity(Intent(this@MainActivity, MainActivity::class.java))*/ }
+                setNegativeButton("CANCEL") { _, _ -> }
             }
             val alertDialog = builder.create()
             alertDialog.show()
@@ -100,21 +98,22 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, StatsActivity::class.java))
         }
 
-
-        val button = findViewById<Button>(R.id.button)
-        when (AppCompatDelegate.getDefaultNightMode()) {
-            AppCompatDelegate.MODE_NIGHT_NO, AppCompatDelegate.MODE_NIGHT_UNSPECIFIED -> {
-                button.text = "USE DARK THEME"
-            }
-            else -> {
-                button.text = "USE LIGHT THEME"
-            }
-        }
-
         val sharedPref = getPreferences(Context.MODE_PRIVATE)
+        println("THEME MODE: ${sharedPref.getInt("THEME", -1)}")
         when (sharedPref.getInt("THEME", -1)) {
             -1, 0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+
+        val button = findViewById<Button>(R.id.button)
+        println("LAST MODE: ${AppCompatDelegate.getDefaultNightMode()}")
+        when (AppCompatDelegate.getDefaultNightMode()) {
+            AppCompatDelegate.MODE_NIGHT_NO, AppCompatDelegate.MODE_NIGHT_UNSPECIFIED -> {
+                button.text = getString(R.string.use_dark_theme_text)
+            }
+            else -> {
+                button.text = getString(R.string.use_light_theme_text)
+            }
         }
 
         button.setOnClickListener {

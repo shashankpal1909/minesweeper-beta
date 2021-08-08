@@ -4,13 +4,6 @@
     android:shape="rectangle">
 
     <corners android:radius="2dp" />
-
-    <!-- This is the border color -->
-    <!--    <stroke-->
-    <!--        android:width="2dp"-->
-    <!--        android:color="#DEE4E7" />-->
-
-    <!--- This is the background color -->
     <solid android:color="#c4c3d0" />
 
 </shape>
