@@ -3,4 +3,18 @@
     <string name="flag_count_text">✹ %1$d</string>
     <string name="use_dark_theme_text">USE DARK THEME</string>
     <string name="use_light_theme_text">USE LIGHT THEME</string>
+    <string name="general">GENERAL</string>
+    <string name="standard">STANDARD</string>
+    <string name="reset">RESET</string>
+    <string name="main_menu">MAIN MENU</string>
+    <string name="custom">CUSTOM</string>
+    <string name="master">MASTER</string>
+    <string name="expert">EXPERT</string>
+    <string name="beginner">BEGINNER</string>
+    <string name="total_time">Total Time</string>
+    <string name="shortest_time">Shortest Time</string>
+    <string name="games_won">Games Won</string>
+    <string name="games_lost">Games Lost</string>
+    <string name="intermediate">INTERMEDIATE</string>
+    <string name="total_games">Total Games</string>
 </resources>

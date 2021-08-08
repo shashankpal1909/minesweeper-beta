@@ -57,6 +57,226 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/generalStatsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="2dp"
+                android:background="@drawable/plain_corner_background"
+                android:orientation="vertical"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:id="@+id/generalLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:gravity="center"
+                    android:text="@string/general"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="#000000"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/totalGamesGeneralLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:text="@string/total_games"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+                    <TextView
+                        android:id="@+id/totalGamesGeneral"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        tools:text="0" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="#000000"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/totalTimeGeneralLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:text="@string/total_time"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+                    <TextView
+                        android:id="@+id/totalTimeGeneral"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        tools:text="0" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="#000000"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/shortestTimeGeneralLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:text="@string/shortest_time"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+                    <TextView
+                        android:id="@+id/shortestTimeGeneral"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        tools:text="0" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="#000000"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/totalGamesWonGeneralLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:text="@string/games_won"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+                    <TextView
+                        android:id="@+id/totalGameWonGeneral"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        tools:text="0" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="#000000"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/totalGamesLostGeneralLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:text="@string/games_lost"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+                    <TextView
+                        android:id="@+id/totalGamesLostGeneral"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        tools:text="0" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="#000000"
+                    android:orientation="vertical" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/standardStatsLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -75,7 +295,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="4dp"
                     android:gravity="center"
-                    android:text="STANDARD"
+                    android:text="@string/standard"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textStyle="bold" />
 
@@ -101,7 +321,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Total Games"
+                        android:text="@string/total_games"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -138,7 +358,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Total Time"
+                        android:text="@string/total_time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -175,7 +395,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Shortest Time"
+                        android:text="@string/shortest_time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -212,7 +432,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Games Won"
+                        android:text="@string/games_won"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -249,7 +469,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Games Lost"
+                        android:text="@string/games_lost"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -295,7 +515,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="4dp"
                     android:gravity="center"
-                    android:text="BEGINNER"
+                    android:text="@string/beginner"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textStyle="bold" />
 
@@ -321,7 +541,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Total Games"
+                        android:text="@string/total_games"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -358,7 +578,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Total Time"
+                        android:text="@string/total_time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -395,7 +615,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Shortest Time"
+                        android:text="@string/shortest_time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -432,7 +652,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Games Won"
+                        android:text="@string/games_won"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -469,7 +689,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Games Lost"
+                        android:text="@string/games_lost"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -515,7 +735,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="4dp"
                     android:gravity="center"
-                    android:text="INTERMEDIATE"
+                    android:text="@string/intermediate"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textStyle="bold" />
 
@@ -541,7 +761,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Total Games"
+                        android:text="@string/total_games"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -578,7 +798,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Total Time"
+                        android:text="@string/total_time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -615,7 +835,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Shortest Time"
+                        android:text="@string/shortest_time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -652,7 +872,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Games Won"
+                        android:text="@string/games_won"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -689,7 +909,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Games Lost"
+                        android:text="@string/games_lost"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -735,7 +955,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="4dp"
                     android:gravity="center"
-                    android:text="EXPERT"
+                    android:text="@string/expert"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textStyle="bold" />
 
@@ -761,7 +981,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Total Games"
+                        android:text="@string/total_games"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -798,7 +1018,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Total Time"
+                        android:text="@string/total_time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -835,7 +1055,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Shortest Time"
+                        android:text="@string/shortest_time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -872,7 +1092,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Games Won"
+                        android:text="@string/games_won"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -909,7 +1129,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Games Lost"
+                        android:text="@string/games_lost"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -955,7 +1175,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="4dp"
                     android:gravity="center"
-                    android:text="MASTER"
+                    android:text="@string/master"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textStyle="bold" />
 
@@ -981,7 +1201,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Total Games"
+                        android:text="@string/total_games"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -1018,7 +1238,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Total Time"
+                        android:text="@string/total_time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -1055,7 +1275,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Shortest Time"
+                        android:text="@string/shortest_time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -1092,7 +1312,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Games Won"
+                        android:text="@string/games_won"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -1129,7 +1349,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Games Lost"
+                        android:text="@string/games_lost"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -1174,7 +1394,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="4dp"
                     android:gravity="center"
-                    android:text="CUSTOM"
+                    android:text="@string/custom"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textStyle="bold" />
 
@@ -1200,7 +1420,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Total Games"
+                        android:text="@string/total_games"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -1237,7 +1457,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Total Time"
+                        android:text="@string/total_time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -1274,7 +1494,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Shortest Time"
+                        android:text="@string/shortest_time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -1311,7 +1531,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Games Won"
+                        android:text="@string/games_won"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -1348,7 +1568,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Games Lost"
+                        android:text="@string/games_lost"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
@@ -1386,7 +1606,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="6dp"
         android:layout_marginBottom="8dp"
-        android:text="RESET"
+        android:text="@string/reset"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/mainMenuStatsButton"
         app:layout_constraintHorizontal_bias="0.5"
@@ -1401,7 +1621,7 @@
         android:layout_marginStart="6dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:text="MAIN MENU"
+        android:text="@string/main_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

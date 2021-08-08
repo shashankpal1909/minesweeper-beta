@@ -9,6 +9,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 
 class StatsActivity : AppCompatActivity() {
+
+    private var generalStatsList = mutableListOf(0, 0, -1, 0, 0)
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -22,8 +25,7 @@ class StatsActivity : AppCompatActivity() {
         val lastGameStatsTextView = findViewById<TextView>(R.id.lastGameStatsTextView)
         val sharedPrefLastGame = getSharedPreferences("LAST_GAME_STATS", Context.MODE_PRIVATE)
 
-        setLastGameStats(lastGameStatsTextView, sharedPrefLastGame)
-        setGameStats()
+        setStats(lastGameStatsTextView, sharedPrefLastGame)
 
         val resetButton = findViewById<Button>(R.id.resetButton)
         resetButton.setOnClickListener {
@@ -44,8 +46,8 @@ class StatsActivity : AppCompatActivity() {
                     ).forEach {
                         getSharedPreferences(it, Context.MODE_PRIVATE).edit().clear().apply()
                     }
-                    setLastGameStats(lastGameStatsTextView, sharedPrefLastGame)
-                    setGameStats()
+                    generalStatsList = mutableListOf(0, 0, -1, 0, 0)
+                    setStats(lastGameStatsTextView, sharedPrefLastGame)
                 }
                 setNegativeButton("CANCEL") { _, _ -> }
             }
@@ -56,6 +58,86 @@ class StatsActivity : AppCompatActivity() {
 
     }
 
+    private fun setStats(
+        lastGameStatsTextView: TextView,
+        sharedPrefLastGame: SharedPreferences
+    ) {
+        setLastGameStats(lastGameStatsTextView, sharedPrefLastGame)
+        setGameStats()
+        setGeneralStats(
+            findViewById(R.id.totalGamesGeneral),
+            findViewById(R.id.totalTimeGeneral),
+            findViewById(R.id.shortestTimeGeneral),
+            findViewById(R.id.totalGamesLostGeneral),
+            findViewById(R.id.totalGameWonGeneral)
+        )
+    }
+
+    private fun setGeneralStats(
+        totalGamesTextView: TextView,
+        totalTimeTextView: TextView,
+        shortestTimeTextView: TextView,
+        totalGamesLostTextView: TextView,
+        totalGamesWonTextView: TextView
+    ) {
+        totalGamesTextView.text = generalStatsList[0].toString()
+        totalTimeTextView.text = getTimeString(generalStatsList[1])
+        shortestTimeTextView.text = getShortestTimeString(generalStatsList[2])
+        totalGamesLostTextView.text = generalStatsList[3].toString()
+        totalGamesWonTextView.text = generalStatsList[4].toString()
+    }
+
+    private fun setGameStats() {
+        setStats(
+            "STANDARD",
+            findViewById(R.id.totalGamesStandard),
+            findViewById(R.id.totalTimeStandard),
+            findViewById(R.id.shortestTimeStandard),
+            findViewById(R.id.totalGamesLostStandard),
+            findViewById(R.id.totalGameWonStandard)
+        )
+        setStats(
+            "BEGINNER",
+            findViewById(R.id.totalGamesBeginner),
+            findViewById(R.id.totalTimeBeginner),
+            findViewById(R.id.shortestTimeBeginner),
+            findViewById(R.id.totalGamesLostBeginner),
+            findViewById(R.id.totalGameWonBeginner)
+        )
+        setStats(
+            "INTERMEDIATE",
+            findViewById(R.id.totalGamesIntermediate),
+            findViewById(R.id.totalTimeIntermediate),
+            findViewById(R.id.shortestTimeIntermediate),
+            findViewById(R.id.totalGamesLostIntermediate),
+            findViewById(R.id.totalGameWonIntermediate)
+        )
+        setStats(
+            "EXPERT",
+            findViewById(R.id.totalGamesExpert),
+            findViewById(R.id.totalTimeExpert),
+            findViewById(R.id.shortestTimeExpert),
+            findViewById(R.id.totalGamesLostExpert),
+            findViewById(R.id.totalGameWonExpert)
+        )
+        setStats(
+            "MASTER",
+            findViewById(R.id.totalGamesMaster),
+            findViewById(R.id.totalTimeMaster),
+            findViewById(R.id.shortestTimeMaster),
+            findViewById(R.id.totalGamesLostMaster),
+            findViewById(R.id.totalGameWonMaster)
+        )
+        setStats(
+            "CUSTOM",
+            findViewById(R.id.totalGamesCustom),
+            findViewById(R.id.totalTimeCustom),
+            findViewById(R.id.shortestTimeCustom),
+            findViewById(R.id.totalGamesLostCustom),
+            findViewById(R.id.totalGameWonCustom)
+        )
+    }
+
     private fun setLastGameStats(
         lastGameStatsTextView: TextView,
         sharedPrefLastGame: SharedPreferences
@@ -63,97 +145,39 @@ class StatsActivity : AppCompatActivity() {
         lastGameStatsTextView.text = sharedPrefLastGame.getString("STATS", "NO GAMES PLAYED YET!")
     }
 
-    private fun setGameStats() {
-        setStandardModeStats()
-        setBeginnerModeStats()
-        setIntermediateModeStats()
-        setExpertModeStats()
-        setMasterModeStats()
-        setCustomModeStats()
-    }
 
-    private fun setCustomModeStats() {
-        val sharedPrefCustom = getSharedPreferences("CUSTOM", MODE_PRIVATE)
-        findViewById<TextView>(R.id.totalGamesCustom).text =
-            sharedPrefCustom.getInt("TOTAL_GAMES_COUNT", 0).toString()
-        findViewById<TextView>(R.id.totalTimeCustom).text =
-            getTimeString(sharedPrefCustom.getInt("TOTAL_TIME", 0))
-        findViewById<TextView>(R.id.shortestTimeCustom).text =
-            getShortestTimeString(sharedPrefCustom.getInt("SHORTEST_TIME", -1))
-        findViewById<TextView>(R.id.totalGamesLostCustom).text =
-            sharedPrefCustom.getInt("TOTAL_GAMES_LOST", 0).toString()
-        findViewById<TextView>(R.id.totalGameWonCustom).text =
-            sharedPrefCustom.getInt("TOTAL_GAMES_WON", 0).toString()
-    }
+    private fun setStats(
+        mode: String,
+        totalGamesTextView: TextView,
+        totalTimeTextView: TextView,
+        shortestTimeTextView: TextView,
+        totalGamesLostTextView: TextView,
+        totalGamesWonTextView: TextView
+    ) {
+        val sharedPref = getSharedPreferences(mode, MODE_PRIVATE)
 
-    private fun setMasterModeStats() {
-        val sharedPrefMaster = getSharedPreferences("MASTER", MODE_PRIVATE)
-        findViewById<TextView>(R.id.totalGamesMaster).text =
-            sharedPrefMaster.getInt("TOTAL_GAMES_COUNT", 0).toString()
-        findViewById<TextView>(R.id.totalTimeMaster).text =
-            getTimeString(sharedPrefMaster.getInt("TOTAL_TIME", 0))
-        findViewById<TextView>(R.id.shortestTimeMaster).text =
-            getShortestTimeString(sharedPrefMaster.getInt("SHORTEST_TIME", -1))
-        findViewById<TextView>(R.id.totalGamesLostMaster).text =
-            sharedPrefMaster.getInt("TOTAL_GAMES_LOST", 0).toString()
-        findViewById<TextView>(R.id.totalGameWonMaster).text =
-            sharedPrefMaster.getInt("TOTAL_GAMES_WON", 0).toString()
-    }
+        val statsList = listOf(
+            sharedPref.getInt("TOTAL_GAMES_COUNT", 0),
+            sharedPref.getInt("TOTAL_TIME", 0),
+            sharedPref.getInt("SHORTEST_TIME", -1),
+            sharedPref.getInt("TOTAL_GAMES_LOST", 0),
+            sharedPref.getInt("TOTAL_GAMES_WON", 0)
+        )
 
-    private fun setExpertModeStats() {
-        val sharedPrefExpert = getSharedPreferences("EXPERT", MODE_PRIVATE)
-        findViewById<TextView>(R.id.totalGamesExpert).text =
-            sharedPrefExpert.getInt("TOTAL_GAMES_COUNT", 0).toString()
-        findViewById<TextView>(R.id.totalTimeExpert).text =
-            getTimeString(sharedPrefExpert.getInt("TOTAL_TIME", 0))
-        findViewById<TextView>(R.id.shortestTimeExpert).text =
-            getShortestTimeString(sharedPrefExpert.getInt("SHORTEST_TIME", -1))
-        findViewById<TextView>(R.id.totalGamesLostExpert).text =
-            sharedPrefExpert.getInt("TOTAL_GAMES_LOST", 0).toString()
-        findViewById<TextView>(R.id.totalGameWonExpert).text =
-            sharedPrefExpert.getInt("TOTAL_GAMES_WON", 0).toString()
-    }
+        totalGamesTextView.text = statsList[0].toString()
+        totalTimeTextView.text = getTimeString(statsList[1])
+        shortestTimeTextView.text = getShortestTimeString(statsList[2])
+        totalGamesLostTextView.text = statsList[3].toString()
+        totalGamesWonTextView.text = statsList[4].toString()
 
-    private fun setIntermediateModeStats() {
-        val sharedPrefIntermediate = getSharedPreferences("INTERMEDIATE", MODE_PRIVATE)
-        findViewById<TextView>(R.id.totalGamesIntermediate).text =
-            sharedPrefIntermediate.getInt("TOTAL_GAMES_COUNT", 0).toString()
-        findViewById<TextView>(R.id.totalTimeIntermediate).text =
-            getTimeString(sharedPrefIntermediate.getInt("TOTAL_TIME", 0))
-        findViewById<TextView>(R.id.shortestTimeIntermediate).text =
-            getShortestTimeString(sharedPrefIntermediate.getInt("SHORTEST_TIME", -1))
-        findViewById<TextView>(R.id.totalGamesLostIntermediate).text =
-            sharedPrefIntermediate.getInt("TOTAL_GAMES_LOST", 0).toString()
-        findViewById<TextView>(R.id.totalGameWonIntermediate).text =
-            sharedPrefIntermediate.getInt("TOTAL_GAMES_WON", 0).toString()
-    }
+        for (i in statsList.indices) {
+            if (i == 2) continue
+            generalStatsList[i] += statsList[i]
+        }
 
-    private fun setBeginnerModeStats() {
-        val sharedPrefBeginner = getSharedPreferences("BEGINNER", MODE_PRIVATE)
-        findViewById<TextView>(R.id.totalGamesBeginner).text =
-            sharedPrefBeginner.getInt("TOTAL_GAMES_COUNT", 0).toString()
-        findViewById<TextView>(R.id.totalTimeBeginner).text =
-            getTimeString(sharedPrefBeginner.getInt("TOTAL_TIME", 0))
-        findViewById<TextView>(R.id.shortestTimeBeginner).text =
-            getShortestTimeString(sharedPrefBeginner.getInt("SHORTEST_TIME", -1))
-        findViewById<TextView>(R.id.totalGamesLostBeginner).text =
-            sharedPrefBeginner.getInt("TOTAL_GAMES_LOST", 0).toString()
-        findViewById<TextView>(R.id.totalGameWonBeginner).text =
-            sharedPrefBeginner.getInt("TOTAL_GAMES_WON", 0).toString()
-    }
+        if ((generalStatsList[2] > statsList[2] || generalStatsList[2] == -1) && statsList[2] != -1)
+            generalStatsList[2] = statsList[2]
 
-    private fun setStandardModeStats() {
-        val sharedPrefStandard = getSharedPreferences("STANDARD", MODE_PRIVATE)
-        findViewById<TextView>(R.id.totalGamesStandard).text =
-            sharedPrefStandard.getInt("TOTAL_GAMES_COUNT", 0).toString()
-        findViewById<TextView>(R.id.totalTimeStandard).text =
-            getTimeString(sharedPrefStandard.getInt("TOTAL_TIME", 0))
-        findViewById<TextView>(R.id.shortestTimeStandard).text =
-            getShortestTimeString(sharedPrefStandard.getInt("SHORTEST_TIME", -1))
-        findViewById<TextView>(R.id.totalGamesLostStandard).text =
-            sharedPrefStandard.getInt("TOTAL_GAMES_LOST", 0).toString()
-        findViewById<TextView>(R.id.totalGameWonStandard).text =
-            sharedPrefStandard.getInt("TOTAL_GAMES_WON", 0).toString()
     }
 
     private fun getShortestTimeString(secondsElapsed: Int): String {
