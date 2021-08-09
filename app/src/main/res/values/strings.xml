@@ -17,4 +17,17 @@
     <string name="games_lost">Games Lost</string>
     <string name="intermediate">INTERMEDIATE</string>
     <string name="total_games">Total Games</string>
+    <string name="continue_game">CONTINUE</string>
+    <string name="statistics">STATISTICS</string>
+    <string name="new_game">NEW GAME</string>
+    <string name="standard_10_19_38">STANDARD (10×19 – 38✹)</string>
+    <string name="beginner_9_9_10">Beginner (9×9 – 10✹)</string>
+    <string name="intermediate_16_16_40">Intermediate (16×16 – 40✹)</string>
+    <string name="expert_24_24_99">Expert (24×24 – 99✹)</string>
+    <string name="master_50_50_300">MASTER (50×50 – 300✹)</string>
+    <string name="_00_00">00:00</string>
+    <string name="restart">RESTART</string>
+    <string name="row_count">Row Count</string>
+    <string name="column_count">Column Count</string>
+    <string name="mine_count">Mine Count</string>
 </resources>

@@ -4,10 +4,12 @@ class Minesweeper(private val width: Int, private val height: Int) {
     var board = Array(width) { Array(height) { MineCell() } }
     var status = Status.ONGOING
         internal set
+    private var mineCount = 0
 
     fun setMine(row: Int, column: Int): Boolean {
         if (board[row][column].value != MINE) {
             board[row][column].value = MINE
+            mineCount++
             return true
         }
         return false
@@ -28,15 +30,19 @@ class Minesweeper(private val width: Int, private val height: Int) {
     private fun checkWin() {
         var mineTriggered = false
         var cellLeft = width * height
+        var flaggedCells = 0
         for (i in board.indices) {
             for (j in board[i].indices) {
                 mineTriggered = board[i][j].value == MINE && board[i][j].isRevealed
                 if (board[i][j].isRevealed || board[i][j].value == MINE || board[i][j].isMarked) {
+                    if (board[i][j].isMarked && board[i][j].value == MINE) {
+                        flaggedCells++
+                    }
                     cellLeft--
                 }
             }
         }
-        if (!mineTriggered && cellLeft == 0) {
+        if ((!mineTriggered && cellLeft == 0) || flaggedCells == mineCount) {
             status = Status.WON
         }
     }

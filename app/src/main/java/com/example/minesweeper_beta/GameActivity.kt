@@ -308,7 +308,7 @@ class GameActivity : AppCompatActivity() {
                         }
                         updateBoard(width, height)
                     }
-                    println("Move $choice $i $j")
+                    println("Move $choice ${i + 1} ${j + 1}")
                 }
 
                 cell.setOnClickListener {

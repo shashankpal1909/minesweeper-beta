@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
             1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
 
-        val button = findViewById<Button>(R.id.button)
+        val button = findViewById<Button>(R.id.changeThemeButton)
         println("LAST MODE: ${AppCompatDelegate.getDefaultNightMode()}")
         when (AppCompatDelegate.getDefaultNightMode()) {
             AppCompatDelegate.MODE_NIGHT_NO, AppCompatDelegate.MODE_NIGHT_UNSPECIFIED -> {

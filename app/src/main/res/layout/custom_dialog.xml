@@ -15,14 +15,15 @@
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:gravity="center"
-        android:hint="Row Count"
+        android:hint="@string/row_count"
         android:inputType="number"
         android:minHeight="48dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/heightEditText"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/heightEditText"
@@ -34,7 +35,7 @@
         android:layout_marginEnd="4dp"
         android:ems="10"
         android:gravity="center"
-        android:hint="Column Count"
+        android:hint="@string/column_count"
         android:inputType="number"
         android:minHeight="48dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -42,7 +43,9 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/minesEditText"
@@ -53,12 +56,13 @@
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:gravity="center"
-        android:hint="Mine Count"
+        android:hint="@string/mine_count"
         android:inputType="number"
         android:minHeight="48dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/heightEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/heightEditText"
+        android:importantForAutofill="no" />
 </androidx.constraintlayout.widget.ConstraintLayout>
