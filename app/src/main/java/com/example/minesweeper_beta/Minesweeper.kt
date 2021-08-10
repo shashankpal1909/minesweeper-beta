@@ -1,11 +1,14 @@
 package com.example.minesweeper_beta
 
 class Minesweeper(private val width: Int, private val height: Int) {
+
+    // ARRAY TO STORE BOARD
     var board = Array(width) { Array(height) { MineCell() } }
     var status = Status.ONGOING
         internal set
     private var mineCount = 0
 
+    // SETS MINES
     fun setMine(row: Int, column: Int): Boolean {
         if (board[row][column].value != MINE) {
             board[row][column].value = MINE
@@ -15,6 +18,7 @@ class Minesweeper(private val width: Int, private val height: Int) {
         return false
     }
 
+    // GET ADJACENT MINES TO A CELL
     private fun getAdjacentMines(row: Int, column: Int): Int {
         var noOfMines = 0
         for (r in row - 1..row + 1) {
@@ -27,6 +31,7 @@ class Minesweeper(private val width: Int, private val height: Int) {
         return noOfMines
     }
 
+    // CHECKS IF USER WON THE GAME
     private fun checkWin() {
         var mineTriggered = false
         var cellLeft = width * height
@@ -47,48 +52,61 @@ class Minesweeper(private val width: Int, private val height: Int) {
         }
     }
 
+    // CHECKS IF A MOVE IS VALID & UPDATE THE BOARD
     fun move(choice: Int, x: Int, y: Int): Boolean {
 
-        if (status == Status.LOST || status == Status.WON) {
-            return false
-        }
+        when {
 
-        if (choice == 1) {
+            // RETURN FALSE IF GAME HAS ALREADY ENDED
+            status == Status.LOST || status == Status.WON -> return false
 
-            if (board[x][y].isRevealed || board[x][y].isMarked) {
-                return false
-            }
+            // CHECK IF CELL CAN BE UNTURNED
+            choice == 1 ->
+                when {
 
-            if (board[x][y].value == MINE) {
-                status = Status.LOST
-                return true
-            } else if (board[x][y].value != MINE) {
-                val noOfMines = getAdjacentMines(x, y)
-                board[x][y].isRevealed = true
-                if (noOfMines > 0) {
-                    board[x][y].value = noOfMines
-                } else {
-                    for (r in x - 1..x + 1) {
-                        for (c in y - 1..y + 1) {
-                            if (r in board.indices && c in board[r].indices)
-                                if (!board[r][c].isRevealed)
-                                    move(choice, r, c)
-                        }
+                    // RETURN FALSE IS CELL ALREADY REVEALED OR IS FLAGGED
+                    board[x][y].isRevealed || board[x][y].isMarked -> return false
+
+                    // IF CELL CONTAINS MINE THEN GAME ENDS
+                    board[x][y].value == MINE -> {
+                        status = Status.LOST
+                        return true
                     }
 
+                    // IF CELL IS NOT A MINE THEN RECURSIVELY OPEN CELLS TILL ADJACENT MINES
+                    board[x][y].value != MINE -> {
+                        val noOfMines = getAdjacentMines(x, y)
+                        board[x][y].isRevealed = true
+                        if (noOfMines > 0) {
+                            board[x][y].value = noOfMines
+                        } else {
+                            for (r in x - 1..x + 1)
+                                for (c in y - 1..y + 1)
+                                    if (r in board.indices && c in board[r].indices && !board[r][c].isRevealed)
+                                        move(choice, r, c)
+                        }
+                        checkWin()
+                        return true
+                    }
                 }
-                checkWin()
-                return true
-            }
 
-        } else if (choice == 2) {
-            if (board[x][y].isRevealed || board[x][y].isMarked) {
-                return false
+            // CHECK IF CELL CAN BE FLAGGED
+            choice == 2 -> {
+                return when {
+
+                    // RETURN FALSE IS CELL ALREADY REVEALED OR IS FLAGGED
+                    board[x][y].isRevealed || board[x][y].isMarked -> false
+
+                    // ELSE MARK THE CELL AS FLAGGED
+                    else -> {
+                        board[x][y].isMarked = true
+                        checkWin()
+                        true
+                    }
+                }
             }
-            board[x][y].isMarked = true
-            checkWin()
-            return true
         }
+
         return false
     }
 
@@ -97,6 +115,7 @@ class Minesweeper(private val width: Int, private val height: Int) {
     }
 }
 
+// MINE CELL DATA CLASS
 data class MineCell(
     var value: Int = 0,
     var isRevealed: Boolean = false,
@@ -104,6 +123,7 @@ data class MineCell(
     var isFinal: Boolean = false
 )
 
+// GAME'S STATUS ENUM CLASS
 enum class Status {
     WON,
     ONGOING,

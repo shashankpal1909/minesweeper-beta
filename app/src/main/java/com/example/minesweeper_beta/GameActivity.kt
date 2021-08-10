@@ -1,9 +1,7 @@
 package com.example.minesweeper_beta
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.Gravity
@@ -18,17 +16,24 @@ import com.google.gson.Gson
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-private var secondsElapsed = 0
-
-var timer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
-    override fun onTick(p0: Long) {
-    }
-
-    override fun onFinish() {
-    }
-}
-
 class GameActivity : AppCompatActivity() {
+
+    private var secondsElapsed = 0
+    lateinit var timerTextView: TextView
+
+    // TIMER TO RECORD GAME TIME
+    private var timer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            secondsElapsed += 1
+            updateGameTime(secondsElapsed, timerTextView)
+        }
+
+        override fun onFinish() {
+            Toast.makeText(applicationContext, "Timer Expired", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -44,135 +49,151 @@ class GameActivity : AppCompatActivity() {
         var minesweeper = Minesweeper(width, height)
         var minesArray = MutableList(getMineCount(width, height, mines, true)) { IntArray(2) }
 
-        val timerTextView = findViewById<TextView>(R.id.timerTextView)
-
-
-        timer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
-
-            override fun onTick(millisUntilFinished: Long) {
-                secondsElapsed += 1
-                updateGameTime(secondsElapsed, timerTextView)
-            }
-
-            override fun onFinish() {
-                Toast.makeText(applicationContext, "Game Over: Timer Expired", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
-
-        fun dpToPx(dp: Int): Int {
-            val density: Float = this.resources.displayMetrics.density
-            return (dp.toFloat() * density).roundToInt()
-        }
+        timerTextView = findViewById(R.id.timerTextView)
 
         var flagCount = getMineCount(width, height, mines, false)
         val flagCountTextView = findViewById<TextView>(R.id.flagCountTextView)
 
         val boardLinearLayout = findViewById<LinearLayout>(R.id.boardLinearLayout)
-
         val mainMenuButton = findViewById<Button>(R.id.mainMenuGameButton)
-        mainMenuButton.setOnClickListener {
-            finish()
+        val restartGameButton = findViewById<Button>(R.id.restartGameButton)
+
+        // CONVERTS DP TO PX
+        fun dpToPx(dp: Int): Int {
+            val density: Float = this.resources.displayMetrics.density
+            return (dp.toFloat() * density).roundToInt()
         }
 
-        val params = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
+        // SETUP MINES ON RANDOM LOCATIONS (OTHER THAN FIRST MOVE'S LOCATION)
+        fun setupMines(x: Int, y: Int) {
+            for (i in 0 until getMineCount(width, height, mines, false)) {
+                while (true) {
+                    val row = Random.nextInt(0, width)
+                    val column = Random.nextInt(0, height)
+                    if ((row == x && column == y)) {
+                        continue
+                    }
+                    if (minesweeper.setMine(row, column)) {
+                        minesArray.add(intArrayOf(row, column))
+                        break
+                    }
+                }
+            }
+        }
 
-        val shape = GradientDrawable()
-        shape.cornerRadius = dpToPx(2).toFloat()
-
+        // UPDATES THE BOARD
         fun updateBoard(
             width: Int,
             height: Int,
             newGameStarting: Boolean = false,
             gameContinue: Boolean = false
         ) {
-            var counter = 1
 
-            shape.setColor(Color.rgb(185, 185, 185))
+            // CELL ID
+            var cellID = 1
 
+            // UPDATES REVEALED CELLS
             for (i in 0 until width) {
                 for (j in 0 until height) {
                     val mineCell = minesweeper.board[i][j]
-                    val cell = findViewById<TextView>(counter)
-                    if (!mineCell.isFinal || gameContinue) {
-                        if (mineCell.isRevealed) {
-                            mineCell.isFinal = true
-                            cell.background = AppCompatResources.getDrawable(
-                                this,
-                                R.drawable.revealed_cell_background
-                            )
-                            if (mineCell.value != 0) {
-                                cell.text = mineCell.value.toString()
-                            }
+                    val cell = findViewById<TextView>(cellID)
+                    when {
+                        !mineCell.isFinal || gameContinue ->
 
-                        } else if (mineCell.isMarked) {
-                            val mineCellShape = GradientDrawable()
-                            mineCellShape.cornerRadius = dpToPx(2).toFloat()
-                            mineCellShape.setColor(Color.rgb(54, 69, 79))
-                            cell.background =
-                                AppCompatResources.getDrawable(this, R.drawable.flag_background)
-                            cell.text = "⚑"
-                        } else if (minesweeper.status == Status.LOST && mineCell.value == -1) {
-                            val mineCellShape = GradientDrawable()
-                            mineCellShape.cornerRadius = dpToPx(2).toFloat()
-                            mineCellShape.setColor(Color.rgb(219, 88, 96))
-                            cell.background =
-                                AppCompatResources.getDrawable(this, R.drawable.mine_background_red)
-                            mineCell.isFinal = true
-                            cell.text = "✹"
-                        } else if (minesweeper.status == Status.WON && mineCell.value == -1) {
-                            val mineCellShape = GradientDrawable()
-                            mineCellShape.cornerRadius = dpToPx(2).toFloat()
-                            mineCellShape.setColor(Color.rgb(86, 168, 105))
-                            mineCell.isFinal = true
-                            cell.background = AppCompatResources.getDrawable(
-                                this,
-                                R.drawable.mine_background_green
-                            )
-                            cell.text = "✹"
-                        } else {
-                            if (newGameStarting) {
-                                cell.text = ""
-                                timer.cancel()
-                                secondsElapsed = 0
-                                timerTextView.text = String.format("%02d:%02d", 0, 0)
-                                cell.setBackgroundResource(R.drawable.rounded_corner_cell)
-                                TextViewCompat.setTextAppearance(
-                                    cell,
-                                    android.R.style.TextAppearance_Material_Body1
-                                )
-                                cell.setTypeface(cell.typeface, Typeface.BOLD)
-                                cell.textSize = 20F
+                            when {
+
+                                // IF CELL IS REVEALED THEN DISPLAY THE NUMBERS ON CELLS
+                                mineCell.isRevealed -> {
+                                    mineCell.isFinal = true
+                                    cell.background = AppCompatResources.getDrawable(
+                                        this,
+                                        R.drawable.revealed_cell_background
+                                    )
+                                    when {
+                                        mineCell.value != 0 -> cell.text = mineCell.value.toString()
+                                    }
+
+                                }
+
+                                // IF CELL IS FLAGGED THEN DISPLAY FLAG ON CELL
+                                mineCell.isMarked -> {
+                                    cell.background =
+                                        AppCompatResources.getDrawable(
+                                            this,
+                                            R.drawable.flag_background
+                                        )
+                                    cell.text = "⚑"
+                                }
+
+                                // IF USER HAS LOST THE GAME THEN REVEAL ALL MINES
+                                minesweeper.status == Status.LOST && mineCell.value == -1 -> {
+                                    cell.background =
+                                        AppCompatResources.getDrawable(
+                                            this,
+                                            R.drawable.mine_background_red
+                                        )
+                                    mineCell.isFinal = true
+                                    cell.text = "✹"
+                                }
+
+                                // IF USER HAS WON THE GAME THEN REVEAL ALL NON-FLAGGED MINES WITH GREEN BACKGROUND
+                                minesweeper.status == Status.WON && mineCell.value == -1 -> {
+                                    mineCell.isFinal = true
+                                    cell.background = AppCompatResources.getDrawable(
+                                        this,
+                                        R.drawable.mine_background_green
+                                    )
+                                    cell.text = "✹"
+                                }
+
+                                else -> {
+
+                                    when {
+
+                                        // RESET THE DISPLAYED BOARD IF NEW GAME IS STARTED
+                                        newGameStarting -> {
+                                            cell.text = ""
+                                            timer.cancel()
+                                            secondsElapsed = 0
+                                            timerTextView.text = String.format("%02d:%02d", 0, 0)
+                                            cell.setBackgroundResource(R.drawable.rounded_corner_cell)
+                                            TextViewCompat.setTextAppearance(
+                                                cell,
+                                                android.R.style.TextAppearance_Material_Body1
+                                            )
+                                            cell.setTypeface(cell.typeface, Typeface.BOLD)
+                                            cell.textSize = 20F
+                                        }
+
+                                    }
+                                }
+
                             }
-                        }
                     }
-                    counter++
+                    cellID++
                 }
             }
 
+            // DISPLAY GAME RESULT AS TOAST AND SAVE GAME STATS IF GAME IS OVER
             if ((minesweeper.status == Status.WON || minesweeper.status == Status.LOST) && !gameContinue) {
 
+                // STOP THE TIMER
                 timer.cancel()
+
+                // SAVE STATS AS LAST GAME STATS
                 val sharedPrefLastGame =
                     getSharedPreferences("LAST_GAME_STATS", Context.MODE_PRIVATE)
                 with(sharedPrefLastGame.edit()) {
                     putString(
                         "STATS",
-                        "LAST GAME : ${getTimeString(secondsElapsed)} | ${boardName.uppercase()} | ${height}×${width} | ${
-                            getMineCount(
-                                width,
-                                height,
-                                mines,
-                                false
-                            )
+                        "LAST GAME : ${getTimeString(secondsElapsed)} | ${boardName.uppercase()} | ${height}×${width} | " + "${
+                            getMineCount(width, height, mines, false)
                         }✹ | ${minesweeper.status}"
                     )
                     commit()
                 }
 
+                // SAVE STATS AS MODE STATS
                 val sharedPrefGameStats =
                     getSharedPreferences(boardName.uppercase(), Context.MODE_PRIVATE)
                 with(sharedPrefGameStats) {
@@ -186,6 +207,7 @@ class GameActivity : AppCompatActivity() {
                     ).apply()
                 }
 
+                // DISPLAY TOAST IF GAME IS LOST
                 if (minesweeper.status == Status.LOST) {
                     with(sharedPrefGameStats) {
                         edit().putInt(
@@ -195,7 +217,12 @@ class GameActivity : AppCompatActivity() {
                     }
                     Toast.makeText(this, "YOU LOST! Better Luck Next Time.", Toast.LENGTH_SHORT)
                         .show()
-                } else if (minesweeper.status == Status.WON) {
+                }
+
+                // DISPLAY TOAST IF GAME IS WON
+                else if (minesweeper.status == Status.WON) {
+
+                    // CHECK AND UPDATE THE SHORTEST TIME
                     with(sharedPrefGameStats) {
                         edit().putInt(
                             "TOTAL_GAMES_WON",
@@ -209,20 +236,18 @@ class GameActivity : AppCompatActivity() {
                             edit().putInt("SHORTEST_TIME", secondsElapsed).apply()
                         }
                     }
+
                     Toast.makeText(
                         this, "YOU WON! Found ${
-                            getMineCount(
-                                width,
-                                height,
-                                mines,
-                                false
-                            )
+                            getMineCount(width, height, mines, false)
                         } Mines in ${getTimeString(secondsElapsed)} Seconds.",
                         Toast.LENGTH_SHORT
                     ).show()
+
                 }
             }
 
+            // SAVE CURRENT GAME STATUS FOR CONTINUING THE GAME ON NEXT RUN
             val sharedPrefSaveGame = getSharedPreferences("SAVE_GAME", Context.MODE_PRIVATE)
             with(sharedPrefSaveGame.edit()) {
                 putInt("GAME_TIME", secondsElapsed)
@@ -240,24 +265,10 @@ class GameActivity : AppCompatActivity() {
 
         }
 
-        fun setupMines(x: Int, y: Int) {
-            for (i in 0 until getMineCount(width, height, mines, false)) {
-                while (true) {
-                    val row = Random.nextInt(0, width)
-                    val column = Random.nextInt(0, height)
-                    if ((row == x && column == y)) {
-                        continue
-                    }
-                    if (minesweeper.setMine(row, column)) {
-                        minesArray.add(intArrayOf(row, column))
-                        break
-                    }
-                }
-            }
-        }
+        // MAIN MENU BUTTON - ON-CLICK LISTENER
+        mainMenuButton.setOnClickListener { finish() }
 
-        val restartGameButton = findViewById<Button>(R.id.restartGameButton)
-
+        // RESTART GAME BUTTON - ON-CLICK LISTENER
         restartGameButton.setOnClickListener {
             minesweeper = Minesweeper(width, height)
             minesArray = MutableList(getMineCount(width, height, mines, false)) { IntArray(2) }
@@ -267,21 +278,30 @@ class GameActivity : AppCompatActivity() {
             updateBoard(width, height, true)
         }
 
+        // HORIZONTAL LINEAR LAYOUT'S PARAMS
+        val paramsLinearLayout = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
 
+        // CELL'S PARAMS
         val paramsCell = LinearLayout.LayoutParams(dpToPx(38), dpToPx(38))
         paramsCell.setMargins(dpToPx(1), dpToPx(1), dpToPx(1), dpToPx(1))
 
-        var counter = 1
+        // CELL ID
+        var cellId = 1
 
+        // GENERATE BOARD ACCORDING TO WIDTH & HEIGHT
         for (i in 0 until width) {
 
             val linearLayout = LinearLayout(this)
             linearLayout.orientation = LinearLayout.HORIZONTAL
-            linearLayout.layoutParams = params
+            linearLayout.layoutParams = paramsLinearLayout
+
             for (j in 0 until height) {
 
                 val cell = TextView(this)
-                cell.id = counter++
+                cell.id = cellId++
                 cell.text = ""
                 cell.gravity = Gravity.CENTER
                 cell.setBackgroundResource(R.drawable.rounded_corner_cell)
@@ -293,28 +313,28 @@ class GameActivity : AppCompatActivity() {
                 cell.textSize = 20F
                 cell.layoutParams = paramsCell
 
-
+                // HANDLES CELL CLICK EVENT
                 fun handleCellClick(choice: Int = 1) {
                     if (firstMove) {
                         firstMove = false
                         timer.start()
                         setupMines(i, j)
-                        println("Mines:${printMines(minesArray)}")
+                        println("Mines:${printMines(minesArray)}") // FOR DEBUGGING
                     }
                     if (minesweeper.move(choice, i, j)) {
                         if (choice == 2) {
                             flagCount--
-                            println("Flag $flagCount")
+                            println("Flag $flagCount") // FOR DEBUGGING
                         }
                         updateBoard(width, height)
                     }
-                    println("Move $choice ${i + 1} ${j + 1}")
+                    println("Move $choice ${i + 1} ${j + 1}") // FOR DEBUGGING
                 }
 
-                cell.setOnClickListener {
-                    handleCellClick()
-                }
+                // CELL'S ON-CLICK LISTENER (TO REVEAL THE CELL)
+                cell.setOnClickListener { handleCellClick() }
 
+                // CELL'S LONG-CLICK LISTENER (TO FLAG THE CELL)
                 cell.setOnLongClickListener {
                     if (flagCount > 0) {
                         handleCellClick(2)
@@ -324,10 +344,14 @@ class GameActivity : AppCompatActivity() {
                 }
 
                 linearLayout.addView(cell)
+
             }
+
             boardLinearLayout.addView(linearLayout)
+
         }
 
+        // RESUME LAST STATE OF GAME IF USER CLICKED CONTINUE
         if (intent.extras!!["GAME_TIME"].toString().toInt() != -1) {
 
             secondsElapsed = intent.extras!!["GAME_TIME"].toString().toInt()
@@ -350,10 +374,21 @@ class GameActivity : AppCompatActivity() {
             updateBoard(width, height, gameContinue = true)
         }
 
+        // DISPLAY FLAG COUNT
         flagCountTextView.text = getString(R.string.flag_count_text, flagCount)
 
     }
 
+    // SAVES THE GAME TIME BEFORE ACTIVITY IS CLOSED
+    override fun onDestroy() {
+        super.onDestroy()
+        timer.cancel()
+        getSharedPreferences("SAVE_GAME", Context.MODE_PRIVATE).edit()
+            .putInt("GAME_TIME", secondsElapsed).apply()
+        secondsElapsed = 0
+    }
+
+    // UPDATES THE GAME TIMER TEXTVIEW
     private fun updateGameTime(secondsElapsed: Int, timerTextView: TextView) {
         val hours = secondsElapsed / 3600
         val minutes = (secondsElapsed % 3600) / 60
@@ -366,20 +401,15 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        timer.cancel()
-        getSharedPreferences("SAVE_GAME", Context.MODE_PRIVATE).edit()
-            .putInt("GAME_TIME", secondsElapsed).apply()
-        secondsElapsed = 0
-    }
-
+    // RETURNS STRING TO PRINT MINE LOCATION (FOR DEBUGGING)
     private fun printMines(minesArray: MutableList<IntArray>): String {
         var str = ""
+        minesArray.sortBy { it[0] }
         minesArray.forEach { str += " (${it[0] + 1},${it[1] + 1})" }
         return str
     }
 
+    // GET A VALID MINE COUNT (IN CASE OF CUSTOM BOARD)
     private fun getMineCount(width: Int, height: Int, mines: Int, mineCountWarning: Boolean): Int {
         return if (mines == -1) {
             if ((width * height) / 8 == 0) {
@@ -399,6 +429,7 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    // GET A FORMATTED TIME STRING
     private fun getTimeString(secondsElapsed: Int): String {
         val hours = secondsElapsed / 3600
         val minutes = (secondsElapsed % 3600) / 60
@@ -413,7 +444,6 @@ class GameActivity : AppCompatActivity() {
             "${hours}h${minutes}m${seconds}s"
         }
     }
-
 
 }
 

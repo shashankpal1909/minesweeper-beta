@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 
 class StatsActivity : AppCompatActivity() {
 
+    // GENERAL STATS LIST
     private var generalStatsList = mutableListOf(0, 0, -1, 0, 0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,18 +19,22 @@ class StatsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_stats)
 
         val mainMenuButton = findViewById<Button>(R.id.mainMenuStatsButton)
+        val resetButton = findViewById<Button>(R.id.resetButton)
+        val lastGameStatsTextView = findViewById<TextView>(R.id.lastGameStatsTextView)
+
+        // GET LAST GAME'S STATS AND DISPLAY THEM
+        val sharedPrefLastGame = getSharedPreferences("LAST_GAME_STATS", Context.MODE_PRIVATE)
+        setStats(lastGameStatsTextView, sharedPrefLastGame)
+
+        // MAIN MENU BUTTON - ON-CLICK LISTENER
         mainMenuButton.setOnClickListener {
             finish()
         }
 
-        val lastGameStatsTextView = findViewById<TextView>(R.id.lastGameStatsTextView)
-        val sharedPrefLastGame = getSharedPreferences("LAST_GAME_STATS", Context.MODE_PRIVATE)
-
-        setStats(lastGameStatsTextView, sharedPrefLastGame)
-
-        val resetButton = findViewById<Button>(R.id.resetButton)
+        // RESET BUTTON - ON-CLICK LISTENER
         resetButton.setOnClickListener {
 
+            // BUILD A ALERT DIALOG TO GET USER'S CONFIRMATION
             val builder = AlertDialog.Builder(this)
             with(builder) {
                 setTitle("Confirm Reset")
@@ -58,6 +63,7 @@ class StatsActivity : AppCompatActivity() {
 
     }
 
+    // SETS GAME STATS
     private fun setStats(
         lastGameStatsTextView: TextView,
         sharedPrefLastGame: SharedPreferences
@@ -73,6 +79,7 @@ class StatsActivity : AppCompatActivity() {
         )
     }
 
+    // SETS GENERAL STATS
     private fun setGeneralStats(
         totalGamesTextView: TextView,
         totalTimeTextView: TextView,
@@ -87,7 +94,10 @@ class StatsActivity : AppCompatActivity() {
         totalGamesWonTextView.text = generalStatsList[4].toString()
     }
 
+    // SETS STATS FOR DIFFERENT MODES
     private fun setGameStats() {
+
+        // SET STATS FOR STANDARD MODE
         setStats(
             "STANDARD",
             findViewById(R.id.totalGamesStandard),
@@ -96,6 +106,8 @@ class StatsActivity : AppCompatActivity() {
             findViewById(R.id.totalGamesLostStandard),
             findViewById(R.id.totalGameWonStandard)
         )
+
+        // SET STATS FOR BEGINNER MODE
         setStats(
             "BEGINNER",
             findViewById(R.id.totalGamesBeginner),
@@ -104,6 +116,8 @@ class StatsActivity : AppCompatActivity() {
             findViewById(R.id.totalGamesLostBeginner),
             findViewById(R.id.totalGameWonBeginner)
         )
+
+        // SET STATS FOR INTERMEDIATE MODE
         setStats(
             "INTERMEDIATE",
             findViewById(R.id.totalGamesIntermediate),
@@ -112,6 +126,8 @@ class StatsActivity : AppCompatActivity() {
             findViewById(R.id.totalGamesLostIntermediate),
             findViewById(R.id.totalGameWonIntermediate)
         )
+
+        // SET STATS FOR EXPERT MODE
         setStats(
             "EXPERT",
             findViewById(R.id.totalGamesExpert),
@@ -120,6 +136,8 @@ class StatsActivity : AppCompatActivity() {
             findViewById(R.id.totalGamesLostExpert),
             findViewById(R.id.totalGameWonExpert)
         )
+
+        // SET STATS FOR MASTER MODE
         setStats(
             "MASTER",
             findViewById(R.id.totalGamesMaster),
@@ -128,6 +146,8 @@ class StatsActivity : AppCompatActivity() {
             findViewById(R.id.totalGamesLostMaster),
             findViewById(R.id.totalGameWonMaster)
         )
+
+        // SET STATS FOR CUSTOM MODE
         setStats(
             "CUSTOM",
             findViewById(R.id.totalGamesCustom),
@@ -136,8 +156,10 @@ class StatsActivity : AppCompatActivity() {
             findViewById(R.id.totalGamesLostCustom),
             findViewById(R.id.totalGameWonCustom)
         )
+
     }
 
+    // SETS LAST GAME STATS
     private fun setLastGameStats(
         lastGameStatsTextView: TextView,
         sharedPrefLastGame: SharedPreferences
@@ -145,7 +167,7 @@ class StatsActivity : AppCompatActivity() {
         lastGameStatsTextView.text = sharedPrefLastGame.getString("STATS", "NO GAMES PLAYED YET!")
     }
 
-
+    // SETS STATS
     private fun setStats(
         mode: String,
         totalGamesTextView: TextView,
@@ -180,11 +202,13 @@ class StatsActivity : AppCompatActivity() {
 
     }
 
+    // RETURNS FORMATTED TIME STRING
     private fun getShortestTimeString(secondsElapsed: Int): String {
         return if (secondsElapsed == -1) "-"
         else getTimeString(secondsElapsed)
     }
 
+    // RETURNS FORMATTED TIME STRING
     private fun getTimeString(secondsElapsed: Int): String {
         val hours = secondsElapsed / 3600
         val minutes = (secondsElapsed % 3600) / 60
