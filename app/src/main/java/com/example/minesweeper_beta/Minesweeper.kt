@@ -6,7 +6,8 @@ class Minesweeper(private val width: Int, private val height: Int) {
     var board = Array(width) { Array(height) { MineCell() } }
     var status = Status.ONGOING
         internal set
-    private var mineCount = 0
+    var mineCount = 0
+        internal set
 
     // SETS MINES
     fun setMine(row: Int, column: Int): Boolean {

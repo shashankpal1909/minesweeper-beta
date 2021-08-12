@@ -217,6 +217,7 @@ class GameActivity : AppCompatActivity() {
                     }
                     Toast.makeText(this, "YOU LOST! Better Luck Next Time.", Toast.LENGTH_SHORT)
                         .show()
+                    println("GAME OVER : LOST")
                 }
 
                 // DISPLAY TOAST IF GAME IS WON
@@ -243,6 +244,8 @@ class GameActivity : AppCompatActivity() {
                         } Mines in ${getTimeString(secondsElapsed)} Seconds.",
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    println("GAME OVER : WON")
 
                 }
             }
@@ -276,6 +279,7 @@ class GameActivity : AppCompatActivity() {
             flagCountTextView.text = getString(R.string.flag_count_text, flagCount)
             firstMove = true
             updateBoard(width, height, true)
+            println("GAME RESTART")
         }
 
         // HORIZONTAL LINEAR LAYOUT'S PARAMS
@@ -371,7 +375,9 @@ class GameActivity : AppCompatActivity() {
                     Status.ONGOING
                 }
             }
+            minesweeper.mineCount = getMineCount(width, height, mines, false)
             updateBoard(width, height, gameContinue = true)
+            println("LAST GAME CONTINUE")
         }
 
         // DISPLAY FLAG COUNT
@@ -404,8 +410,10 @@ class GameActivity : AppCompatActivity() {
     // RETURNS STRING TO PRINT MINE LOCATION (FOR DEBUGGING)
     private fun printMines(minesArray: MutableList<IntArray>): String {
         var str = ""
+        minesArray.remove(intArrayOf(0, 0))
         minesArray.sortBy { it[0] }
-        minesArray.forEach { str += " (${it[0] + 1},${it[1] + 1})" }
+        minesArray.filter { !it.contentEquals(intArrayOf(0, 0)) }
+            .forEach { str += " (${it[0] + 1},${it[1] + 1})" }
         return str
     }
 
